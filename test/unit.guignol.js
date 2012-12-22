@@ -19,7 +19,6 @@ test('Guignol.expand', function() {
   deepEqual(Guignol.expand({}), {}, 'Expanding unrelevant objects does not change them.');
   deepEqual(Guignol.expand(null), null, 'Expanding null returns null.');
   deepEqual(Guignol.expand(undefined), undefined, 'Expanding undefined returns undefined.');
-  deepEqual(Guignol.expand(undefined), undefined, 'Expanding undefined returns undefined.');
 
   var anim = {
     RENDERER: 'r',
@@ -66,7 +65,7 @@ test('Guignol.expand', function() {
 });
 
 module('Guignol.js');
-test('Basic usage', function() {
+test('Use play and goTo', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -100,4 +99,53 @@ test('Basic usage', function() {
     start();
     deepEqual(value, 100, 'play works.');
   }, 120);
+});
+
+test('Use play and stop with multiple animations', function() {
+  var value,
+      inst = new Guignol({
+        start: 0,
+        end: 100,
+        renderers: {
+          r: function(o) {
+            value = o.v;
+          }
+        },
+        scenario: [
+          {
+            RENDERER: 'r',
+            v: [
+              {
+                FROM: 0,
+                TO: 50,
+                START: 0,
+                END: 30
+              },
+              {
+                FROM: 50,
+                TO: 50,
+                START: 30,
+                END: 70
+              },
+              {
+                FROM: 50,
+                TO: 100,
+                START: 70,
+                END: 100
+              }
+            ]
+          }
+        ]
+      });
+
+  // Test stop():
+  stop();
+  inst.play();
+  window.setTimeout(function() {
+    inst.stop();
+    window.setTimeout(function() {
+      start();
+      deepEqual(value, 50, 'stop works.');
+    }, 70);
+  }, 50);
 });

@@ -67,7 +67,6 @@
 
     function _render(t) {
       var i, s, r; // index, shape, renderer
-      t = t - (_originTime || 0) + (_start || 0);
 
       for (i in _scenario) {
         s = _scenario[i];
@@ -84,9 +83,14 @@
       }
 
       if (_isPlaying && t < _end)
-        __requestAnimFrame(_render);
+        __requestAnimFrame(_convertAndRender);
       else if (t > _end)
         _isPlaying = false
+    }
+
+    function _convertAndRender(t) {
+      _time = t - (_originTime || 0) + (_start || 0)
+      _render(_time);
     }
 
     this.goTo = function(t) {
@@ -97,7 +101,7 @@
     this.play = function() {
       _originTime = new Date();
       _isPlaying = true;
-      _render(_originTime);
+      _convertAndRender(_originTime);
       return this;
     };
     this.stop = function() {
