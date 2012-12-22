@@ -1,4 +1,6 @@
 (function(window, undefined) {
+  "use strict";
+
   /**
    * Naming policy:
    * **************
@@ -8,7 +10,9 @@
    *  - Two underscores (prefix): Related to every instances
    */
   var __easings = {},
-      __renderers = {};
+      __renderers = {},
+      __identity = function(v) { return v; },
+      __properties = 'START END FROM TO EASING ANIMATION'.split(' ');
       
   /**
    * Recognized parameters:
@@ -20,7 +24,7 @@
    *  - start: (?number)
    *  - end: (?number)
    */
-  window.guignol = function(options) {
+  window.Guignol = function(options) {
     var _o = options || {},
         _times = _o.times || _o.t || {},
         _renderers = _o.renderers || _o.r || {},
@@ -42,7 +46,7 @@
       var res = {};
 
       if (typeof o === 'string')
-        return _animations[o];
+        return _animations[o] || o;
       else if (typeof o === 'object') {
         if (o.ANIMATION && _animations[o.ANIMATION]) {
           var k,
@@ -63,19 +67,19 @@
 
     function _render(t) {
       var i, s, r; // index, shape, renderer
-      t = t - _originTime + (_start || 0);
+      t = t - (_originTime || 0) + (_start || 0);
 
       for (i in _scenario) {
         s = _scenario[i];
 
         // Check local, then global:
-        r = _renderers[s._renderer] || __renderers[s._renderer];
+        r = _renderers[s.RENDERER] || __renderers[s.RENDERER];
 
         if (
           r && (s.END === undefined || _getTime(s.END) > t) &&
           (s.START === undefined || _getTime(s.START) < t)
         ) {
-          r(__expand(a, t, _getTime, _getAnim));
+          r(__expand(s, t, _getTime, _getAnim));
         }
       }
 
@@ -88,20 +92,23 @@
     this.goTo = function(t) {
       _time = t;
       _render(t);
+      return this;
     };
     this.play = function(t) {
       _originTime = new Date();
       _isPlaying = true;
       _render();
+      return this;
     };
     this.stop = function() {
       _isPlaying = false;
+      return this;
     };
     this.time = function() {
       return _time;
     };
   };
-  var G = window.guignol;
+  var G = window.Guignol;
 
   /**
    * Find window.requestAnimationFrame fallback:
@@ -140,8 +147,13 @@
    *  - ANIMATION: The parent animation (?string)
    */
   function __expand(v, t, getTime, getAnim) {
+    getTime = getTime || __identity;
+    getAnim = getAnim || __identity;
+
     // If an array, find the good timeStep:
-    if (Object.prototype.toString.call(v) === '[object Array]') {
+    if (v == null)
+      return v;
+    else if (Object.prototype.toString.call(v) === '[object Array]') {
       var i, oMin, oMax, s, e,
           min = t, max = t;
       for (i in v) {
@@ -172,9 +184,12 @@
 
     // If an object, try to interpolate:
     } else if (typeof v === 'object' || typeof v === 'string') {
-        var o = getAnim(v[i]),
-            s = getTime(o.START),
-            e = getTime(o.END);
+      var o = getAnim(v),
+          s = getTime(o.START),
+          e = getTime(o.END);
+
+      if (typeof o === 'string')
+        return v;
 
       // Let's first check if the object is a valid animation:
       if (s !== undefined && e !== undefined) {
@@ -195,14 +210,28 @@
         var res = {};
 
         for (var k in o) {
-          res[k] = __expand(o[k], t);
+          if (typeof o[k] === 'object')
+            res[k] = __expand(o[k], t, getTime, getAnim);
+          else if (typeof o[k] === 'string') {
+            var o2 = getAnim(o[k]);
+            if (typeof o2 === 'object')
+              res[k] = __expand(o[k], t, getTime, getAnim);
+            else
+              res[k] = o[k];
+          } else
+            res[k] = o[k];
         }
+
+        return res;
       }
 
     // It not an object or an array, nothing to expand:
     } else
       return v;
   }
+
+  G.expand = __expand;
+  G.interpolate = __interpolate;
 
   G.requestAnimationFrame = __requestAnimFrame;
   G.easings = function(a1, a2) {
