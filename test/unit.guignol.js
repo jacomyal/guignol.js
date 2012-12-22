@@ -14,9 +14,9 @@ test('Guignol.interpolate', function() {
 });
 
 test('Guignol.expand: Unexpected values', function() {
-  deepEqual(Guignol.expand('a'), 'a', 'Expanding unrelevant strings does not change them.');
-  deepEqual(Guignol.expand(42), 42, 'Expanding unrelevant numbers does not change them.');
-  deepEqual(Guignol.expand({}), {}, 'Expanding unrelevant objects does not change them.');
+  deepEqual(Guignol.expand('a'), 'a', 'Expanding irrelevant strings does not change them.');
+  deepEqual(Guignol.expand(42), 42, 'Expanding irrelevant numbers does not change them.');
+  deepEqual(Guignol.expand({}), {}, 'Expanding irrelevant objects does not change them.');
   deepEqual(Guignol.expand(null), null, 'Expanding null returns null.');
   deepEqual(Guignol.expand(undefined), undefined, 'Expanding undefined returns undefined.');
 });
