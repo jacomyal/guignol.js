@@ -154,27 +154,40 @@
     getTime = getTime || __identity;
     getAnim = getAnim || __identity;
 
-    // If an array, find the good timeStep:
+    // If null or undefined, return the same value:
     if (v == null)
       return v;
+
+    // If an array, find the good timeStep:
     else if (Object.prototype.toString.call(v) === '[object Array]') {
       var i, oMin, oMax, s, e,
-          min = t, max = t;
+          min, max;
       for (i in v) {
         var o = getAnim(v[i]),
             s = getTime(o.START),
             e = getTime(o.END);
 
         // If a timestep matches, just interpolate
-        if (s <= t && e >= t)
-          return __interpolate(o.FROM, o.TO, t);
+        if (s <= t && e >= t) {
+          var progress = (t - s) / (e - s);
+          progress = Math.min(1, Math.max(0, progress));
+
+          if (o.EASING) {
+            if (__easings[o.EASING])
+              progress = __easings[o.EASING](progress);
+            else if (typeof o.EASING === 'function')
+              progress = o.EASING(progress);
+          }
+
+          return __interpolate(o.FROM, o.TO, progress);
+        }
 
         // If not, find the good persistent timestep
         else {
-          if (s > min) {
+          if (s > t && (min === undefined || s < min)) {
             min = s;
             oMin = o;
-          } else if (e < max) {
+          } else if (e < t && (max === undefined || e > max)) {
             max = e;
             oMax = o;
           }

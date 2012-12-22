@@ -13,45 +13,41 @@ test('Guignol.interpolate', function() {
   }, 'Deep interpolation works.');
 });
 
-test('Guignol.expand', function() {
+test('Guignol.expand: Unexpected values', function() {
   deepEqual(Guignol.expand('a'), 'a', 'Expanding unrelevant strings does not change them.');
   deepEqual(Guignol.expand(42), 42, 'Expanding unrelevant numbers does not change them.');
   deepEqual(Guignol.expand({}), {}, 'Expanding unrelevant objects does not change them.');
   deepEqual(Guignol.expand(null), null, 'Expanding null returns null.');
   deepEqual(Guignol.expand(undefined), undefined, 'Expanding undefined returns undefined.');
+});
 
+test('Guignol.expand: Single animations', function() {
   var anim = {
-    RENDERER: 'r',
-    v: {
-      FROM: 0,
-      TO: 100,
-      START: 0,
-      END: 100
-    }
-  };
+        v: {
+          FROM: 0,
+          TO: 100,
+          START: 0,
+          END: 100
+        }
+      };
 
   deepEqual(Guignol.expand(anim, -50), {
-    RENDERER: 'r',
     v: 0
   }, 'Expanding objects works (earlier).');
 
   deepEqual(Guignol.expand(anim, 0), {
-    RENDERER: 'r',
     v: 0
   }, 'Expanding objects works (start value).');
 
   deepEqual(Guignol.expand(anim, 50), {
-    RENDERER: 'r',
     v: 50
-  }, 'Expanding objects works (inbetween value).');
+  }, 'Expanding objects works (during animation).');
 
   deepEqual(Guignol.expand(anim, 100), {
-    RENDERER: 'r',
     v: 100
   }, 'Expanding objects works (end value).');
 
-  deepEqual(Guignol.expand(anim, 200), {
-    RENDERER: 'r',
+  deepEqual(Guignol.expand(anim, 150), {
     v: 100
   }, 'Expanding objects works (later).');
 
@@ -59,9 +55,63 @@ test('Guignol.expand', function() {
     return t != null ? t+50 : t;
   };
   deepEqual(Guignol.expand(anim, 100, time), {
-    RENDERER: 'r',
     v: 50
   }, 'Expanding objects with getTime() works.');
+});
+
+test('Guignol.expand: Multiple animations', function() {
+  var anim = {
+        v: [
+          {
+            FROM: 0,
+            TO: 100,
+            START: 0,
+            END: 50
+          },
+          {
+            FROM: 200,
+            TO: 300,
+            START: 100,
+            END: 150
+          }
+        ]
+      };
+
+  deepEqual(Guignol.expand(anim, -50), {
+    v: 0
+  }, 'Expanding objects with multiple animations works (earlier).');
+
+  deepEqual(Guignol.expand(anim, 0), {
+    v: 0
+  }, 'Expanding objects with multiple animations works (start value).');
+
+  deepEqual(Guignol.expand(anim, 25), {
+    v: 50
+  }, 'Expanding objects with multiple animations works (during first animation).');
+
+  deepEqual(Guignol.expand(anim, 50), {
+    v: 100
+  }, 'Expanding objects with multiple animations works (end of first animation).');
+
+  deepEqual(Guignol.expand(anim, 75), {
+    v: 100
+  }, 'Expanding objects with multiple animations works (between animations).');
+
+  deepEqual(Guignol.expand(anim, 100), {
+    v: 200
+  }, 'Expanding objects with multiple animations works (beginning of second animation).');
+
+  deepEqual(Guignol.expand(anim, 125), {
+    v: 250
+  }, 'Expanding objects with multiple animations works (during second animation).');
+
+  deepEqual(Guignol.expand(anim, 150), {
+    v: 300
+  }, 'Expanding objects with multiple animations works (end value).');
+
+  deepEqual(Guignol.expand(anim, 200), {
+    v: 300
+  }, 'Expanding objects with multiple animations works (later).');
 });
 
 module('Guignol.js');
