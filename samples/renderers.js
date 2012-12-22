@@ -1,1 +1,3 @@
-// TODO
+(function(window, undefined) {
+  // TODO
+})(window);

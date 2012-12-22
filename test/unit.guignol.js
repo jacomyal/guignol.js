@@ -199,4 +199,3 @@ test('Use play and stop', function() {
     }, 70);
   }, 50);
 });
-
