@@ -73,7 +73,6 @@ test('Basic usage', function() {
         end: 100,
         renderers: {
           r: function(o) {
-            console.log('ahah lol', o.v, o);
             value = o.v;
           }
         },
