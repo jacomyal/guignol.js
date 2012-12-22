@@ -2,7 +2,7 @@
   /**
    * Naming policy:
    * **************
-   *  - Upper case: Parameters recognized by Gepetto
+   *  - Upper case: Parameters recognized by Guignol
    *  - No underscore (prefix): var in local scope or parameter
    *  - One underscore (prefix): Related to the instance
    *  - Two underscores (prefix): Related to every instances
@@ -20,7 +20,7 @@
    *  - start: (?number)
    *  - end: (?number)
    */
-  window.gepetto = function(options) {
+  window.guignol = function(options) {
     var _o = options || {},
         _times = _o.times || _o.t || {},
         _renderers = _o.renderers || _o.r || {},
@@ -106,7 +106,7 @@
   /**
    * Find window.requestAnimationFrame fallback:
    */
-  function __requestAnimFrame = (function() {
+  var __requestAnimFrame = (function() {
     return  window.requestAnimationFrame || 
             window.webkitRequestAnimationFrame || 
             window.mozRequestAnimationFrame || 
