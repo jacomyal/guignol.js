@@ -25,13 +25,13 @@ test('Guignol.expand', function() {
     RENDERER: 'r',
     v: {
       FROM: 0,
-      TO: 1000,
+      TO: 100,
       START: 0,
-      END: 1000
+      END: 100
     }
   };
 
-  deepEqual(Guignol.expand(anim, -500), {
+  deepEqual(Guignol.expand(anim, -50), {
     RENDERER: 'r',
     v: 0
   }, 'Expanding objects works (earlier).');
@@ -41,27 +41,27 @@ test('Guignol.expand', function() {
     v: 0
   }, 'Expanding objects works (start value).');
 
-  deepEqual(Guignol.expand(anim, 500), {
+  deepEqual(Guignol.expand(anim, 50), {
     RENDERER: 'r',
-    v: 500
+    v: 50
   }, 'Expanding objects works (inbetween value).');
 
-  deepEqual(Guignol.expand(anim, 1000), {
+  deepEqual(Guignol.expand(anim, 100), {
     RENDERER: 'r',
-    v: 1000
+    v: 100
   }, 'Expanding objects works (end value).');
 
-  deepEqual(Guignol.expand(anim, 2000), {
+  deepEqual(Guignol.expand(anim, 200), {
     RENDERER: 'r',
-    v: 1000
+    v: 100
   }, 'Expanding objects works (later).');
 
   var time = function(t) {
-    return t != null ? t+500 : t;
+    return t != null ? t+50 : t;
   };
-  deepEqual(Guignol.expand(anim, 1000, time), {
+  deepEqual(Guignol.expand(anim, 100, time), {
     RENDERER: 'r',
-    v: 500
+    v: 50
   }, 'Expanding objects with getTime() works.');
 });
 
@@ -69,8 +69,11 @@ module('Guignol.js');
 test('Basic usage', function() {
   var value,
       inst = new Guignol({
+        start: 0,
+        end: 100,
         renderers: {
           r: function(o) {
+            console.log('ahah lol', o.v, o);
             value = o.v;
           }
         },
@@ -79,14 +82,23 @@ test('Basic usage', function() {
             RENDERER: 'r',
             v: {
               FROM: 0,
-              TO: 1000,
+              TO: 100,
               START: 0,
-              END: 1000
+              END: 100
             }
           }
         ]
       });
 
-  inst.goTo(500);
-  deepEqual(value, 500, 'Basic initialization works.');
+  // Test goTo():
+  inst.goTo(50);
+  deepEqual(value, 50, 'goTo works.');
+
+  // Test start():
+  stop();
+  inst.play();
+  window.setTimeout(function() {
+    start();
+    deepEqual(value, 100, 'play works.');
+  }, 120);
 });

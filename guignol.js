@@ -94,10 +94,10 @@
       _render(t);
       return this;
     };
-    this.play = function(t) {
+    this.play = function() {
       _originTime = new Date();
       _isPlaying = true;
-      _render();
+      _render(_originTime);
       return this;
     };
     this.stop = function() {
@@ -184,12 +184,14 @@
 
     // If an object, try to interpolate:
     } else if (typeof v === 'object' || typeof v === 'string') {
-      var o = getAnim(v),
-          s = getTime(o.START),
-          e = getTime(o.END);
+      var o = getAnim(v);
 
+      // If it is still a string, then there is nothing to expand:
       if (typeof o === 'string')
         return v;
+
+      var s = getTime(o.START),
+          e = getTime(o.END)
 
       // Let's first check if the object is a valid animation:
       if (s !== undefined && e !== undefined) {
