@@ -151,7 +151,7 @@ test('Use play and goTo', function() {
   }, 120);
 });
 
-test('Use play and stop with multiple animations', function() {
+test('Use play and stop', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -199,3 +199,4 @@ test('Use play and stop with multiple animations', function() {
     }, 70);
   }, 50);
 });
+
