@@ -199,3 +199,58 @@ test('Use play and stop', function() {
     }, 70);
   }, 50);
 });
+
+test('Parallele animations', function() {
+  var value1,
+      value2,
+      inst1 = new Guignol({
+        start: 0,
+        end: 100,
+        renderers: {
+          r: function(o) {
+            value1 = o.v;
+          }
+        },
+        scenario: [
+          {
+            RENDERER: 'r',
+            v: {
+              FROM: 0,
+              TO: 100,
+              START: 0,
+              END: 100
+            }
+          }
+        ]
+      }),
+      inst2 = new Guignol({
+        start: 0,
+        end: 100,
+        renderers: {
+          r: function(o) {
+            value2 = o.v;
+          }
+        },
+        scenario: [
+          {
+            RENDERER: 'r',
+            v: {
+              FROM: 0,
+              TO: 100,
+              START: 0,
+              END: 100
+            }
+          }
+        ]
+      });
+
+  // Test start():
+  stop();
+  inst1.play();
+  inst2.play();
+  window.setTimeout(function() {
+    start();
+    deepEqual(value1, 100, 'value 1 is good.');
+    deepEqual(value2, 100, 'value 2 is good.');
+  }, 120);
+});
