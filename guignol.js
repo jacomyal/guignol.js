@@ -1,13 +1,13 @@
-(function(window, undefined) {
+;(function(window, undefined) {
   "use strict";
 
   /**
    * Naming policy:
    * **************
-   *  - Upper case: Parameters recognized by Guignol
-   *  - No underscore (prefix): var in local scope or parameter
-   *  - One underscore (prefix): Related to the instance
-   *  - Two underscores (prefix): Related to every instances
+   *  - UPPERCASE: Parameters recognized by Guignol
+   *  - camlCase: var in local scope or parameter
+   *  - _camlCaseUnderscore: Related to the instance
+   *  - __camlCaseUnderscores: Related to every instances
    */
   var __easings = {},
       __renderers = {},
