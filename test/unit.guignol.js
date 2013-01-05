@@ -200,6 +200,154 @@ test('Use play and stop', function() {
   }, 50);
 });
 
+test('Use "rewind"', function() {
+  var value,
+      inst = new Guignol({
+        start: 0,
+        end: 100,
+        renderers: {
+          r: function(o) {
+            value = o.v;
+          }
+        },
+        options: {
+          rewind: 1
+        },
+        scenario: [
+          {
+            RENDERER: 'r',
+            v: {
+              FROM: 0,
+              TO: 100,
+              START: 40,
+              END: 60
+            }
+          }
+        ]
+      });
+
+  // Test rewinding:
+  stop();
+  inst.play();
+  window.setTimeout(function() {
+    start();
+    deepEqual(value, 100, 'forward animation works.');
+    stop();
+    window.setTimeout(function() {
+      start();
+      deepEqual(value, 0, 'backward animation works.');
+      stop();
+      window.setTimeout(function() {
+        start();
+        deepEqual(value, 0, 'animation is stopped after having been played backward.');
+      }, 20);
+    }, 100);
+  }, 100);
+});
+
+test('Use "cycle"', function() {
+  var value,
+      inst = new Guignol({
+        start: 0,
+        end: 100,
+        renderers: {
+          r: function(o) {
+            value = o.v;
+          }
+        },
+        options: {
+          cycle: 1
+        },
+        scenario: [
+          {
+            RENDERER: 'r',
+            v: {
+              FROM: 0,
+              TO: 100,
+              START: 40,
+              END: 60
+            }
+          }
+        ]
+      });
+
+  // Test rewinding:
+  stop();
+  inst.play();
+  window.setTimeout(function() {
+    start();
+    deepEqual(value, 100, 'first animation has been played.');
+    stop();
+    window.setTimeout(function() {
+      start();
+      deepEqual(value, 0, 'value is reinitialized (beginning the second animation).');
+      stop();
+      window.setTimeout(function() {
+        start();
+        deepEqual(value, 100, 'second animation has been played.');
+        inst.stop();
+      }, 80);
+    }, 20);
+  }, 90);
+});
+
+test('Use "rewind" and "cycle"', function() {
+  var value,
+      inst = new Guignol({
+        start: 0,
+        end: 100,
+        renderers: {
+          r: function(o) {
+            value = o.v;
+          }
+        },
+        options: {
+          cycle: 1,
+          rewind: 1
+        },
+        scenario: [
+          {
+            RENDERER: 'r',
+            v: {
+              FROM: 0,
+              TO: 100,
+              START: 40,
+              END: 60
+            }
+          }
+        ]
+      });
+
+  // Test rewinding:
+  stop();
+  inst.play();
+  window.setTimeout(function() {
+    start();
+    deepEqual(value, 100, 'first animation has been played.');
+    stop();
+    window.setTimeout(function() {
+      start();
+      deepEqual(value, 100, 'value has not changed (beginning the backward animation).');
+      stop();
+      window.setTimeout(function() {
+        start();
+        deepEqual(value, 0, 'second animation has been played backward.');
+        stop();
+        window.setTimeout(function() {
+          start();
+          deepEqual(value, 0, 'value has not changed (beginning the second forward animation).');
+          stop();
+          window.setTimeout(function() {
+            start();
+            deepEqual(value, 100, 'third animation has been played forward.');
+            inst.stop();
+          }, 80);
+        }, 20);
+      }, 80);
+    }, 20);
+  }, 90);
+});
+
 test('Parallele animations', function() {
   var value1,
       value2,

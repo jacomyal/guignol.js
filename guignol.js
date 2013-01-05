@@ -1,5 +1,5 @@
 ;(function(window, undefined) {
-  "use strict";
+  'use strict';
 
   /**
    * Naming policy:
@@ -13,7 +13,7 @@
       __renderers = {},
       __identity = function(v) { return v; },
       __properties = 'START END FROM TO EASING ANIMATION'.split(' ');
-      
+
   /**
    * Recognized parameters:
    * **********************
@@ -23,18 +23,29 @@
    *  - animations: (?object)
    *  - start: (?number)
    *  - end: (?number)
+   *  - options: (?object)
+   *    Recognized options:
+   *     - cycle (?boolean): Makes the animation plays again from the beginning
+   *                         when it ends.
+   *     - rewind (?boolean): Makes the animation plays again backward when it
+   *                          ends forward.
+   *     If both "cycle" and "rewind" are "true", then the animation will be
+   *     played forward, backward, forward, etc...
    */
   window.Guignol = function(options) {
-    var _o = options || {},
+    var _self = this,
+        _o = options || {},
         _times = _o.times || _o.t || {},
         _renderers = _o.renderers || _o.r || {},
         _animations = _o.animations || _o.a || {},
         _scenario = _o.scenario || _o.s || {},
+        _options = _o.options || {},
         _start = _getTime(_o.start),
         _end = _getTime(_o.end),
         _originTime,
         _time,
-        _isPlaying;
+        _isPlaying,
+        _isRewinding;
 
     function _getTime(t) {
       return typeof t === 'string' ?
@@ -82,14 +93,26 @@
         }
       }
 
-      if (_isPlaying && t < _end)
+      var isEnded = _isRewinding ? (t < _start) : (t > _end);
+      if (_isPlaying && !isEnded)
         __requestAnimFrame(_convertAndRender);
-      else if (t > _end)
-        _isPlaying = false
+      else if (_isPlaying && isEnded) {
+        _isPlaying = false;
+        if (!_isRewinding && _options.rewind) {
+          _isRewinding = true;
+          _self.play();
+        } else if (_options.cycle) {
+          _isRewinding = false;
+          _self.play();
+        }
+      }
     }
 
     function _convertAndRender(t) {
-      _time = t - (_originTime || 0) + (_start || 0)
+      if (_isRewinding)
+        _time = _end - (t - (_originTime || 0) + (_start || 0));
+      else
+        _time = t - (_originTime || 0) + (_start || 0);
       _render(_time);
     }
 
@@ -98,14 +121,19 @@
       _render(t);
       return this;
     };
-    this.play = function() {
+    this.play = function(t) {
       _originTime = new Date();
+
+      if (typeof t === 'number')
+        _originTime -= t;
+
       _isPlaying = true;
       _convertAndRender(_originTime);
       return this;
     };
     this.stop = function() {
       _isPlaying = false;
+      _isRewinding = false;
       return this;
     };
     this.time = function() {
@@ -118,14 +146,16 @@
    * Find window.requestAnimationFrame fallback:
    */
   var __requestAnimFrame = (function() {
-    return  window.requestAnimationFrame || 
-            window.webkitRequestAnimationFrame || 
-            window.mozRequestAnimationFrame || 
-            window.oRequestAnimationFrame || 
-            window.msRequestAnimationFrame || 
-            function(callback) {
-              window.setTimeout(callback, 1000 / 60);
-            };
+    return (
+      window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function(callback) {
+        window.setTimeout(callback, 1000 / 60);
+      }
+    );
   })();
 
   function __interpolate(from, to, progress) {
@@ -208,7 +238,7 @@
         return v;
 
       var s = getTime(o.START),
-          e = getTime(o.END)
+          e = getTime(o.END);
 
       // Let's first check if the object is a valid animation:
       if (s !== undefined && e !== undefined) {
