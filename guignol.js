@@ -21,9 +21,10 @@
    *  - times: (?object)
    *  - renderers: (?object)
    *  - animations: (?object)
-   *  - start: (?number)
-   *  - end: (?number)
+   *  - start: (number)
+   *  - end: (number)
    *  - options: (?object)
+   *  - enterFrame: (?function)
    *    Recognized options:
    *     - cycle (?boolean): Makes the animation plays again from the beginning
    *                         when it ends.
@@ -38,8 +39,9 @@
         _times = _o.times || _o.t || {},
         _renderers = _o.renderers || _o.r || {},
         _animations = _o.animations || _o.a || {},
+        _enterFrame = _o.enterFrame || _o.e || __identity,
         _scenario = _o.scenario || _o.s || {},
-        _options = _o.options || {},
+        _options = _o.options || _o.o || {},
         _start = _getTime(_o.start),
         _end = _getTime(_o.end),
         _originTime,
@@ -78,6 +80,8 @@
 
     function _render(t) {
       var i, s, r; // index, shape, renderer
+
+      _enterFrame(t);
 
       for (i in _scenario) {
         s = _scenario[i];

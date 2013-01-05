@@ -1,4 +1,4 @@
-(function(window, undefined) {
+;(function(window, undefined) {
   window.easings = window.easings || {};
   var easings = window.easings;
 
