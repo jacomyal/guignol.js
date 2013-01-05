@@ -115,7 +115,7 @@ test('Guignol.expand: Multiple animations', function() {
 });
 
 module('Guignol.js');
-test('Use play and goTo', function() {
+asyncTest('Use play and goTo', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -143,15 +143,14 @@ test('Use play and goTo', function() {
   deepEqual(value, 50, 'goTo works.');
 
   // Test start():
-  stop();
   inst.play();
-  window.setTimeout(function() {
+  setTimeout(function() {
     start();
     deepEqual(value, 100, 'play works.');
   }, 120);
 });
 
-test('Use play and stop', function() {
+asyncTest('Use play and stop', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -189,18 +188,17 @@ test('Use play and stop', function() {
       });
 
   // Test stop():
-  stop();
   inst.play();
-  window.setTimeout(function() {
+  setTimeout(function() {
     inst.stop();
-    window.setTimeout(function() {
+    setTimeout(function() {
       start();
       deepEqual(value, 50, 'stop works.');
     }, 70);
   }, 50);
 });
 
-test('Use "rewind"', function() {
+asyncTest('Use "rewind"', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -219,25 +217,24 @@ test('Use "rewind"', function() {
             v: {
               FROM: 0,
               TO: 100,
-              START: 40,
-              END: 60
+              START: 45,
+              END: 65
             }
           }
         ]
       });
 
   // Test rewinding:
-  stop();
   inst.play();
-  window.setTimeout(function() {
+  setTimeout(function() {
     start();
     deepEqual(value, 100, 'forward animation works.');
     stop();
-    window.setTimeout(function() {
+    setTimeout(function() {
       start();
       deepEqual(value, 0, 'backward animation works.');
       stop();
-      window.setTimeout(function() {
+      setTimeout(function() {
         start();
         deepEqual(value, 0, 'animation is stopped after having been played backward.');
       }, 20);
@@ -245,7 +242,7 @@ test('Use "rewind"', function() {
   }, 100);
 });
 
-test('Use "cycle"', function() {
+asyncTest('Use "cycle"', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -264,34 +261,33 @@ test('Use "cycle"', function() {
             v: {
               FROM: 0,
               TO: 100,
-              START: 40,
-              END: 60
+              START: 45,
+              END: 65
             }
           }
         ]
       });
 
-  // Test rewinding:
-  stop();
+  // Test cycle:
   inst.play();
-  window.setTimeout(function() {
+  setTimeout(function() {
     start();
     deepEqual(value, 100, 'first animation has been played.');
     stop();
-    window.setTimeout(function() {
+    setTimeout(function() {
       start();
       deepEqual(value, 0, 'value is reinitialized (beginning the second animation).');
       stop();
-      window.setTimeout(function() {
+      setTimeout(function() {
         start();
         deepEqual(value, 100, 'second animation has been played.');
         inst.stop();
-      }, 80);
-    }, 20);
-  }, 90);
+      }, 60);
+    }, 40);
+  }, 80);
 });
 
-test('Use "rewind" and "cycle"', function() {
+asyncTest('Use "rewind" and "cycle"', function() {
   var value,
       inst = new Guignol({
         start: 0,
@@ -311,44 +307,43 @@ test('Use "rewind" and "cycle"', function() {
             v: {
               FROM: 0,
               TO: 100,
-              START: 40,
-              END: 60
+              START: 45,
+              END: 65
             }
           }
         ]
       });
 
-  // Test rewinding:
-  stop();
+  // Test rewinding and cycling:
   inst.play();
-  window.setTimeout(function() {
+  setTimeout(function() {
     start();
     deepEqual(value, 100, 'first animation has been played.');
     stop();
-    window.setTimeout(function() {
+    setTimeout(function() {
       start();
       deepEqual(value, 100, 'value has not changed (beginning the backward animation).');
       stop();
-      window.setTimeout(function() {
+      setTimeout(function() {
         start();
         deepEqual(value, 0, 'second animation has been played backward.');
         stop();
-        window.setTimeout(function() {
+        setTimeout(function() {
           start();
           deepEqual(value, 0, 'value has not changed (beginning the second forward animation).');
           stop();
-          window.setTimeout(function() {
+          setTimeout(function() {
             start();
             deepEqual(value, 100, 'third animation has been played forward.');
             inst.stop();
           }, 80);
-        }, 20);
-      }, 80);
-    }, 20);
-  }, 90);
+        }, 40);
+      }, 60);
+    }, 40);
+  }, 80);
 });
 
-test('Parallele animations', function() {
+asyncTest('Parallele animations', function() {
   var value1,
       value2,
       inst1 = new Guignol({
@@ -392,11 +387,9 @@ test('Parallele animations', function() {
         ]
       });
 
-  // Test start():
-  stop();
   inst1.play();
   inst2.play();
-  window.setTimeout(function() {
+  setTimeout(function() {
     start();
     deepEqual(value1, 100, 'value 1 is good.');
     deepEqual(value2, 100, 'value 2 is good.');
