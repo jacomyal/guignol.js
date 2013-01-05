@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>guignol.js | examples</title>
+    <style type="text/css">
+      body {
+        background: #eee;
+      }
+      h4.title {
+        float: left;
+        margin: 5px;
+      }
+      .buttons {
+        float: right;
+      }
+      .examples {
+        max-width: 1000px;
+        margin: auto;
+      }
+      .example {
+        position: relative;
+        padding: 10px;
+        height: 200px;
+        background: #fff;
+        border: 1px #555 solid;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      .mobile {
+        position: absolute;
+        top: 100px;
+        width: 100px;
+        height: 100px;
+        background: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript" src="./jquery.js"></script>
+    <script type="text/javascript" src="./easings.js"></script>
+    <script type="text/javascript" src="../guignol.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var LEFT_PADDING = parseInt($('.example').css('padding-left'), 10);
+
+        var _examples = {};
+
+        Guignol.easings(easings);
+
+        // Example 1:
+        _examples.example1 = new Guignol({
+          start: 0,
+          end: 1000,
+          renderers: {
+            r: function(o) {
+              $('#example1 .mobile').css('left', o.left + LEFT_PADDING);
+            }
+          },
+          scenario: [
+            {
+              RENDERER: 'r',
+              left: {
+                FROM: 0,
+                TO: $('#example1').width() - $('#example1 .mobile').width(),
+                START: 0,
+                END: 1000
+              }
+            }
+          ]
+        });
+
+        // Example 2:
+        _examples.example2 = new Guignol({
+          start: 0,
+          end: 1000,
+          renderers: {
+            r: function(o) {
+              $('#example2 .mobile').css('left', o.left + LEFT_PADDING);
+            }
+          },
+          options: {
+            cycle: 1
+          },
+          scenario: [
+            {
+              RENDERER: 'r',
+              left: {
+                FROM: 0,
+                TO: $('#example2').width() - $('#example2 .mobile').width(),
+                START: 0,
+                END: 1000
+              }
+            }
+          ]
+        });
+
+        // Example 3:
+        _examples.example3 = new Guignol({
+          start: 0,
+          end: 1000,
+          renderers: {
+            r: function(o) {
+              $('#example3 .mobile').css('left', o.left + LEFT_PADDING);
+            }
+          },
+          options: {
+            rewind: 1
+          },
+          scenario: [
+            {
+              RENDERER: 'r',
+              left: {
+                FROM: 0,
+                TO: $('#example3').width() - $('#example3 .mobile').width(),
+                START: 0,
+                END: 1000
+              }
+            }
+          ]
+        });
+
+        // Example 4:
+        _examples.example4 = new Guignol({
+          start: 0,
+          end: 1000,
+          renderers: {
+            r: function(o) {
+              $('#example4 .mobile').css('left', o.left + LEFT_PADDING);
+            }
+          },
+          options: {
+            cycle: 1,
+            rewind: 1
+          },
+          scenario: [
+            {
+              RENDERER: 'r',
+              left: {
+                FROM: 0,
+                TO: $('#example4').width() - $('#example4 .mobile').width(),
+                START: 0,
+                END: 1000
+              }
+            }
+          ]
+        });
+
+        // Example 5:
+        _examples.example5 = new Guignol({
+          start: 0,
+          end: 1000,
+          renderers: {
+            r: function(o) {
+              $('#example5 .mobile').css('left', o.left + LEFT_PADDING);
+            }
+          },
+          options: {
+            cycle: 1,
+            rewind: 1
+          },
+          scenario: [
+            {
+              RENDERER: 'r',
+              left: {
+                EASING: 'quadraticInOut',
+                FROM: 0,
+                TO: $('#example5').width() - $('#example5 .mobile').width(),
+                START: 0,
+                END: 1000
+              }
+            }
+          ]
+        });
+
+
+        // Common actions
+        $('button.play').click(function() {
+          _examples[$(this).parents('.example').attr('id')].play();
+        });
+
+        $('button.stop').click(function() {
+          _examples[$(this).parents('.example').attr('id')].stop();
+        });
+      });  
+    </script>
+
+    <div class="examples">
+      <!-- Example 1: -->
+      <div class="example basic" id="example1">
+        <h4 class="title">Example 1: The most basic animation</h4>
+        <div class="buttons">
+          <button class="play">play</button>
+          <button class="stop">stop</button>
+        </div>
+        <div class="mobile"></div>
+      </div>
+
+      <!-- Example 2: -->
+      <div class="example basic" id="example2">
+        <h4 class="title">Example 2: Cycling animation</h4>
+        <div class="buttons">
+          <button class="play">play</button>
+          <button class="stop">stop</button>
+        </div>
+        <div class="mobile"></div>
+      </div>
+
+      <!-- Example 3: -->
+      <div class="example basic" id="example3">
+        <h4 class="title">Example 3: Rewinding animation</h4>
+        <div class="buttons">
+          <button class="play">play</button>
+          <button class="stop">stop</button>
+        </div>
+        <div class="mobile"></div>
+      </div>
+
+      <!-- Example 4: -->
+      <div class="example basic" id="example4">
+        <h4 class="title">Example 4: Rewinding and cycling animation</h4>
+        <div class="buttons">
+          <button class="play">play</button>
+          <button class="stop">stop</button>
+        </div>
+        <div class="mobile"></div>
+      </div>
+
+      <!-- Example 5: -->
+      <div class="example basic" id="example5">
+        <h4 class="title">Example 5: Using easings</h4>
+        <div class="buttons">
+          <button class="play">play</button>
+          <button class="stop">stop</button>
+        </div>
+        <div class="mobile"></div>
+      </div>
+
+    </div>
+  </body>
+</html>
