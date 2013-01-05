@@ -21,7 +21,7 @@
       .example {
         position: relative;
         padding: 10px;
-        height: 200px;
+        height: 40px;
         background: #fff;
         border: 1px #555 solid;
         border-radius: 5px;
@@ -29,10 +29,10 @@
       }
       .mobile {
         position: absolute;
-        top: 100px;
+        top: 40px;
         width: 100px;
-        height: 100px;
-        background: #ccc;
+        height: 10px;
+        background: #000;
       }
     </style>
   </head>
@@ -54,7 +54,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example1 .mobile').css('left', o.left + LEFT_PADDING);
+              $('#example1 .mobile').css('left', o.left * ($('#example1').width() - $('#example1 .mobile').width()) + LEFT_PADDING);
             }
           },
           scenario: [
@@ -62,7 +62,7 @@
               RENDERER: 'r',
               left: {
                 FROM: 0,
-                TO: $('#example1').width() - $('#example1 .mobile').width(),
+                TO: 1,
                 START: 0,
                 END: 1000
               }
@@ -76,7 +76,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example2 .mobile').css('left', o.left + LEFT_PADDING);
+              $('#example2 .mobile').css('left', o.left * ($('#example2').width() - $('#example2 .mobile').width()) + LEFT_PADDING);
             }
           },
           options: {
@@ -87,7 +87,7 @@
               RENDERER: 'r',
               left: {
                 FROM: 0,
-                TO: $('#example2').width() - $('#example2 .mobile').width(),
+                TO: 1,
                 START: 0,
                 END: 1000
               }
@@ -101,7 +101,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example3 .mobile').css('left', o.left + LEFT_PADDING);
+              $('#example3 .mobile').css('left', o.left * ($('#example3').width() - $('#example3 .mobile').width()) + LEFT_PADDING);
             }
           },
           options: {
@@ -112,7 +112,7 @@
               RENDERER: 'r',
               left: {
                 FROM: 0,
-                TO: $('#example3').width() - $('#example3 .mobile').width(),
+                TO: 1,
                 START: 0,
                 END: 1000
               }
@@ -126,7 +126,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example4 .mobile').css('left', o.left + LEFT_PADDING);
+              $('#example4 .mobile').css('left', o.left * ($('#example4').width() - $('#example4 .mobile').width()) + LEFT_PADDING);
             }
           },
           options: {
@@ -138,7 +138,7 @@
               RENDERER: 'r',
               left: {
                 FROM: 0,
-                TO: $('#example4').width() - $('#example4 .mobile').width(),
+                TO: 1,
                 START: 0,
                 END: 1000
               }
@@ -152,7 +152,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example5 .mobile').css('left', o.left + LEFT_PADDING);
+              $('#example5 .mobile').css('left', o.left * ($('#example5').width() - $('#example5 .mobile').width()) + LEFT_PADDING);
             }
           },
           options: {
@@ -165,7 +165,7 @@
               left: {
                 EASING: 'quadraticInOut',
                 FROM: 0,
-                TO: $('#example5').width() - $('#example5 .mobile').width(),
+                TO: 1,
                 START: 0,
                 END: 1000
               }
