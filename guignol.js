@@ -101,14 +101,22 @@
       if (_isPlaying && !isEnded)
         __requestAnimFrame(_convertAndRender);
       else if (_isPlaying && isEnded) {
-        _isPlaying = false;
         if (!_isRewinding && _options.rewind) {
           _isRewinding = true;
-          _self.play();
-        } else if (_options.cycle) {
+          _originTime = new Date();
+          __requestAnimFrame(_convertAndRender);
+        } else {
           _isRewinding = false;
-          _self.play();
+
+          if (_options.cycle) {
+            _originTime = new Date();
+            __requestAnimFrame(_convertAndRender);
+          } else {
+            _isPlaying = false;
+          }
         }
+      } else { 
+        _isPlaying = false;
       }
     }
 
@@ -132,12 +140,12 @@
         _originTime -= t;
 
       _isPlaying = true;
+      _isRewinding = false;
       _convertAndRender(_originTime);
       return this;
     };
     this.stop = function() {
       _isPlaying = false;
-      _isRewinding = false;
       return this;
     };
     this.time = function() {
