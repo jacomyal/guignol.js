@@ -7,32 +7,40 @@
       body {
         background: #eee;
       }
-      h4.title {
-        float: left;
-        margin: 5px;
-      }
-      .buttons {
-        float: right;
-      }
       .examples {
         max-width: 1000px;
         margin: auto;
       }
       .example {
-        position: relative;
-        padding: 10px;
-        height: 40px;
+        padding: 3px;
         background: #fff;
-        border: 1px #555 solid;
+        box-shadow: 1px 1px 12px #555;
         border-radius: 5px;
         margin-bottom: 10px;
       }
-      .mobile {
+      .example .header {
+        height: 30px;
+      }
+      .example .header h4.title {
+        font-family: Arial, Helvetica, sans-serif;
+        float: left;
+        margin: 5px;
+      }
+      .example .header .buttons {
+        float: right;
+      }
+      .example .mobile-container {
+        position: relative;
+        width: 100%;
+        height: 10px;
+        padding: 5px 0;
+      }
+      .example .mobile-container .mobile {
         position: absolute;
-        top: 40px;
+        border-radius: 2px;
         width: 100px;
         height: 10px;
-        background: #000;
+        background: #666;
       }
     </style>
   </head>
@@ -42,7 +50,8 @@
     <script type="text/javascript" src="../guignol.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        var LEFT_PADDING = parseInt($('.example').css('padding-left'), 10);
+        var L_PADDING = parseInt($('.example').css('padding-left'), 10),
+            R_PADDING = parseInt($('.example').css('padding-right'), 10);
 
         var _examples = {};
 
@@ -54,7 +63,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example1 .mobile').css('left', o.left * ($('#example1').width() - $('#example1 .mobile').width()) + LEFT_PADDING);
+              $('#example1 .mobile').css('left', o.left * ($('#example1').width() - R_PADDING - $('#example1 .mobile').width()) + L_PADDING);
             }
           },
           scenario: [
@@ -76,7 +85,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example2 .mobile').css('left', o.left * ($('#example2').width() - $('#example2 .mobile').width()) + LEFT_PADDING);
+              $('#example2 .mobile').css('left', o.left * ($('#example2').width() - R_PADDING - $('#example2 .mobile').width()) + L_PADDING);
             }
           },
           options: {
@@ -101,7 +110,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example3 .mobile').css('left', o.left * ($('#example3').width() - $('#example3 .mobile').width()) + LEFT_PADDING);
+              $('#example3 .mobile').css('left', o.left * ($('#example3').width() - R_PADDING - $('#example3 .mobile').width()) + L_PADDING);
             }
           },
           options: {
@@ -126,7 +135,7 @@
           end: 1000,
           renderers: {
             r: function(o) {
-              $('#example4 .mobile').css('left', o.left * ($('#example4').width() - $('#example4 .mobile').width()) + LEFT_PADDING);
+              $('#example4 .mobile').css('left', o.left * ($('#example4').width() - R_PADDING - $('#example4 .mobile').width()) + L_PADDING);
             }
           },
           options: {
@@ -151,8 +160,17 @@
           start: 0,
           end: 1000,
           renderers: {
-            r: function(o) {
-              $('#example5 .mobile').css('left', o.left * ($('#example5').width() - $('#example5 .mobile').width()) + LEFT_PADDING);
+            r1: function(o) {
+              var m = $('#example5 .mobile-container:nth-child(2) .mobile');
+              m.css('left', o.left * ($('#example5').width() - R_PADDING - m.width()) + L_PADDING);
+            },
+            r2: function(o) {
+              var m = $('#example5 .mobile-container:nth-child(3) .mobile');
+              m.css('left', o.left * ($('#example5').width() - R_PADDING - m.width()) + L_PADDING);
+            },
+            r3: function(o) {
+              var m = $('#example5 .mobile-container:nth-child(4) .mobile');
+              m.css('left', o.left * ($('#example5').width() - R_PADDING - m.width()) + L_PADDING);
             }
           },
           options: {
@@ -161,9 +179,29 @@
           },
           scenario: [
             {
-              RENDERER: 'r',
+              RENDERER: 'r1',
               left: {
                 EASING: 'quadraticInOut',
+                FROM: 0,
+                TO: 1,
+                START: 0,
+                END: 1000
+              }
+            },
+            {
+              RENDERER: 'r2',
+              left: {
+                EASING: 'backInOut',
+                FROM: 0,
+                TO: 1,
+                START: 0,
+                END: 1000
+              }
+            },
+            {
+              RENDERER: 'r3',
+              left: {
+                EASING: 'bounceInOut',
                 FROM: 0,
                 TO: 1,
                 START: 0,
@@ -188,52 +226,78 @@
     <div class="examples">
       <!-- Example 1: -->
       <div class="example basic" id="example1">
-        <h4 class="title">Example 1: The most basic animation</h4>
-        <div class="buttons">
-          <button class="play">play</button>
-          <button class="stop">stop</button>
+        <div class="header">
+          <h4 class="title">Example 1: The most basic animation</h4>
+          <div class="buttons">
+            <button class="play">play</button>
+            <button class="stop">stop</button>
+          </div>
         </div>
-        <div class="mobile"></div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
       </div>
 
       <!-- Example 2: -->
       <div class="example basic" id="example2">
-        <h4 class="title">Example 2: Cycling animation</h4>
-        <div class="buttons">
-          <button class="play">play</button>
-          <button class="stop">stop</button>
+        <div class="header">
+          <h4 class="title">Example 2: Cycling animation</h4>
+          <div class="buttons">
+            <button class="play">play</button>
+            <button class="stop">stop</button>
+          </div>
         </div>
-        <div class="mobile"></div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
       </div>
 
       <!-- Example 3: -->
       <div class="example basic" id="example3">
-        <h4 class="title">Example 3: Rewinding animation</h4>
-        <div class="buttons">
-          <button class="play">play</button>
-          <button class="stop">stop</button>
+        <div class="header">
+          <h4 class="title">Example 3: Rewinding animation</h4>
+          <div class="buttons">
+            <button class="play">play</button>
+            <button class="stop">stop</button>
+          </div>
         </div>
-        <div class="mobile"></div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
       </div>
 
       <!-- Example 4: -->
       <div class="example basic" id="example4">
-        <h4 class="title">Example 4: Rewinding and cycling animation</h4>
-        <div class="buttons">
-          <button class="play">play</button>
-          <button class="stop">stop</button>
+        <div class="header">
+          <h4 class="title">Example 4: Rewinding and cycling animation</h4>
+          <div class="buttons">
+            <button class="play">play</button>
+            <button class="stop">stop</button>
+          </div>
         </div>
-        <div class="mobile"></div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
       </div>
 
       <!-- Example 5: -->
       <div class="example basic" id="example5">
-        <h4 class="title">Example 5: Using easings</h4>
-        <div class="buttons">
-          <button class="play">play</button>
-          <button class="stop">stop</button>
+        <div class="header">
+          <h4 class="title">Example 5: Using easings</h4>
+          <div class="buttons">
+            <button class="play">play</button>
+            <button class="stop">stop</button>
+          </div>
         </div>
-        <div class="mobile"></div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
+        <div class="mobile-container">
+          <div class="mobile"></div>
+        </div>
       </div>
 
     </div>
