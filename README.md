@@ -44,7 +44,7 @@ inst.play(0);
 In practice, renderers can be wrappers to CANVAS methods (for instance a `.drawArc()` wrapper) or anything you want to animate (DOM, SVG, CANVAS, attributes...). It is also possible to cycle animations, to use easings functions...
 
 Check the [examples file](https://raw.github.com/jacomyal/guignol.js/master/samples/examples.html) for more information about how to use it.
-[Sources](https://raw.github.com/jacomyal/guignol.js/master/guignol.js) are documented, and [unit tests](https://raw.github.com/jacomyal/guignol.js/master/test/unit.html) are also provided.
+[Sources](https://raw.github.com/jacomyal/guignol.js/master/guignol.js) are documented, and [unit tests](https://raw.github.com/jacomyal/guignol.js/master/test/unit.guignol.js) are also provided.
 
 -----
 
